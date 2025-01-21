@@ -2,7 +2,7 @@
 
 import { db } from '@zealthy-app/db/db';
 import { users, userWorkflows, workflows, workflowSteps, addresses, aboutMe, birthdates } from '@zealthy-app/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export const fetchWorkflowData = async () => {
   try {
@@ -25,35 +25,46 @@ export const fetchWorkflowData = async () => {
       .leftJoin(userWorkflows, eq(users.id, userWorkflows.userId))
       .leftJoin(workflows, eq(userWorkflows.workflowId, workflows.id))
       .leftJoin(workflowSteps, eq(workflows.id, workflowSteps.workflowId))
-      .leftJoin(aboutMe, eq(workflowSteps.id, aboutMe.stepId))
-      .leftJoin(addresses, eq(workflowSteps.id, addresses.stepId))
-      .leftJoin(birthdates, eq(workflowSteps.id, birthdates.stepId));
+      .leftJoin(
+        aboutMe,
+        and(eq(workflowSteps.id, aboutMe.stepId), eq(users.id, aboutMe.userId)), // Filter by userId
+      )
+      .leftJoin(
+        addresses,
+        and(eq(workflowSteps.id, addresses.stepId), eq(users.id, addresses.userId)), // Filter by userId
+      )
+      .leftJoin(
+        birthdates,
+        and(eq(workflowSteps.id, birthdates.stepId), eq(users.id, birthdates.userId)), // Filter by userId
+      );
 
-    const formattedData = data.map((row) => {
-      let data = null;
-      if (row.component === 'about_me') {
-        data = row.aboutMeContent;
-      } else if (row.component === 'address') {
-        data = {
-          street: row.addressStreet,
-          city: row.addressCity,
-          state: row.addressState,
-          zip: row.addressZip,
+    const formattedData = data
+      .map((row) => {
+        let data = null;
+        if (row.component === 'about_me') {
+          data = row.aboutMeContent;
+        } else if (row.component === 'address') {
+          data = {
+            street: row.addressStreet,
+            city: row.addressCity,
+            state: row.addressState,
+            zip: row.addressZip,
+          };
+        } else if (row.component === 'birthdate') {
+          data = row.birthdate;
+        }
+
+        return {
+          userId: row.userId,
+          email: row.email,
+          workflowName: row.workflowName,
+          workflowId: row.workflowId,
+          step: row.step,
+          component: row.component,
+          data,
         };
-      } else if (row.component === 'birthdate') {
-        data = row.birthdate;
-      }
-
-      return {
-        userId: row.userId,
-        email: row.email,
-        workflowName: row.workflowName,
-        workflowId: row.workflowId,
-        step: row.step,
-        component: row.component,
-        data,
-      };
-    });
+      })
+      .filter((row) => row.data !== null); // Filter out rows where `data` is null
 
     return formattedData;
   } catch (error) {
