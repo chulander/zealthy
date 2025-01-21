@@ -9,15 +9,15 @@ import { completeStep } from '@zealthy-app/actions/onboarding';
 import { useUserContext } from '@zealthy-app/context/UserContext';
 import { getWorkflowStepDetails } from '@zealthy-app/utils/userWorkFlowTools';
 
-// interface OnboardingStepsProps {
-//   currentStep: number;
-//   userId: string;
-//   components: string; // Comma-separated string of component names
-//   workflowId: string; // Workflow ID associated with the user
-// }
+interface OnboardingStepsProps {
+  currentStep: number;
+  userId: string;
+  components: string; // Comma-separated string of component names
+  workflowId: string; // Workflow ID associated with the user
+}
 
-export function OnboardingSteps() {
-  const { userId, currentStep, components, workflowId, updateCompletedSteps, updateCurrentStep } = useUserContext();
+export function OnboardingSteps({ currentStep, userId, components, workflowId }: OnboardingStepsProps) {
+  const { updateCompletedSteps, updateCurrentStep } = useUserContext();
   const router = useRouter();
   const [step, setStep] = useState(currentStep); // Start at the current step
   const [formData, setFormData] = useState({
@@ -52,10 +52,13 @@ export function OnboardingSteps() {
 
         const workflowDetails = await getWorkflowStepDetails(userId);
         if (workflowDetails) {
-          const { currentStep: newCurrentStep, completedSteps: newCompletedStep } = workflowDetails;
+          const { currentStep: newCurrentStep, completedSteps: newCompletedSteps } = workflowDetails;
+          console.log('newCurrentStep:', newCurrentStep);
+          console.log('newCompletedStep:', newCompletedSteps);
           updateCurrentStep(newCurrentStep);
-          updateCompletedSteps(newCompletedStep);
+          updateCompletedSteps(newCompletedSteps);
         }
+        router.refresh(); // Refresh the page to update the progress bar
         if (step === steps.length) {
           // Redirect to the complete page if all steps are finished
           router.push('/signup/complete');
