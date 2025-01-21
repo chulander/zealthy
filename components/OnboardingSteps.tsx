@@ -6,15 +6,18 @@ import StepAboutMe from './StepAboutMe';
 import StepAddress from './StepAddress';
 import StepBirthdate from './StepBirthDate';
 import { completeStep } from '@zealthy-app/actions/onboarding';
+import { useUserContext } from '@zealthy-app/context/UserContext';
+import { getWorkflowStepDetails } from '@zealthy-app/utils/userWorkFlowTools';
 
-interface OnboardingStepsProps {
-  currentStep: number;
-  userId: string;
-  components: string; // Comma-separated string of component names
-  workflowId: string; // Workflow ID associated with the user
-}
+// interface OnboardingStepsProps {
+//   currentStep: number;
+//   userId: string;
+//   components: string; // Comma-separated string of component names
+//   workflowId: string; // Workflow ID associated with the user
+// }
 
-export function OnboardingSteps({ currentStep, userId, components, workflowId }: OnboardingStepsProps) {
+export function OnboardingSteps() {
+  const { userId, currentStep, components, workflowId, updateCompletedSteps, updateCurrentStep } = useUserContext();
   const router = useRouter();
   const [step, setStep] = useState(currentStep); // Start at the current step
   const [formData, setFormData] = useState({
@@ -47,6 +50,12 @@ export function OnboardingSteps({ currentStep, userId, components, workflowId }:
         // Mark the step as completed using a server action
         await completeStep(userId, step, workflowId, componentType, componentData);
 
+        const workflowDetails = await getWorkflowStepDetails(userId);
+        if (workflowDetails) {
+          const { currentStep: newCurrentStep, completedSteps: newCompletedStep } = workflowDetails;
+          updateCurrentStep(newCurrentStep);
+          updateCompletedSteps(newCompletedStep);
+        }
         if (step === steps.length) {
           // Redirect to the complete page if all steps are finished
           router.push('/signup/complete');
@@ -64,7 +73,7 @@ export function OnboardingSteps({ currentStep, userId, components, workflowId }:
         setError('Failed to complete the step. Please try again.');
       }
     },
-    [userId, step, steps.length, router, workflowId],
+    [userId, step, steps.length, router, workflowId, updateCurrentStep, updateCompletedSteps],
   );
 
   // Map components to React elements

@@ -7,6 +7,7 @@ interface UserContextType {
   workflowId: string;
   currentStep: number;
   updateCurrentStep: (step: number) => void; // Function to update the step
+  updateCompletedSteps: (step: number) => void; // Function to update the step
   components: string;
   completedSteps: number;
   totalSteps: number;
@@ -19,16 +20,25 @@ export const UserProvider = ({
   value,
 }: {
   children: React.ReactNode;
-  value: Omit<UserContextType, 'updateCurrentStep'>; // The initial value won't include the update function
+  value: Omit<UserContextType, 'updateCurrentStep' | 'updateCompletedSteps'>; // The initial value won't include the update functions
 }) => {
   console.log('context value', value);
   const [currentStep, setCurrentStep] = useState(value.currentStep);
+  const [completedSteps, setCompletedSteps] = useState(value.completedSteps);
 
   const updateCurrentStep = useCallback((step: number) => {
     setCurrentStep(step); // Dynamically update the current step
   }, []);
 
-  return <UserContext.Provider value={{ ...value, currentStep, updateCurrentStep }}>{children}</UserContext.Provider>;
+  const updateCompletedSteps = useCallback((step: number) => {
+    setCompletedSteps(step); // Dynamically update the completed steps
+  }, []);
+
+  return (
+    <UserContext.Provider value={{ ...value, currentStep, updateCurrentStep, completedSteps, updateCompletedSteps }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUserContext = () => {

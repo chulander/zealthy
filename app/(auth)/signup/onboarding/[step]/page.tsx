@@ -6,7 +6,7 @@ import { useUserContext } from '@zealthy-app/context/UserContext';
 import { OnboardingSteps } from '@zealthy-app/components/OnboardingSteps';
 
 export default function OnboardingStepPage() {
-  const { userId, currentStep, components, workflowId, totalSteps, completedSteps } = useUserContext();
+  const { currentStep, totalSteps, completedSteps } = useUserContext();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -34,7 +34,7 @@ export default function OnboardingStepPage() {
 
   return (
     <div>
-      <OnboardingSteps currentStep={currentStep} userId={userId} components={components} workflowId={workflowId} />
+      <OnboardingSteps />
     </div>
   );
 }
