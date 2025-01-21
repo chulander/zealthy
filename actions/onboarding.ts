@@ -28,7 +28,7 @@ export async function completeStep(
     throw new Error('User workflow not found.');
   }
 
-  const { workflowId: userWorkflowId, completedSteps } = userWorkflow;
+  const { completedSteps } = userWorkflow;
 
   // Step 2: Validate the step being marked as complete
   if (completedStep <= completedSteps) {
@@ -126,7 +126,7 @@ export async function completeStep(
         completedSteps: completedStep, // Update completed steps to the current step
         editedAt: sql`CURRENT_TIMESTAMP`, // Update timestamp
       })
-      .where(eq(userWorkflows.workflowId, userWorkflowId));
+      .where(and(eq(userWorkflows.workflowId, workflowId), eq(userWorkflows.userId, userId))); // Filter by both workflowId and userId
   } catch (error) {
     console.error('Error updating completed steps:', error);
     throw new Error('Failed to update completed steps.');
