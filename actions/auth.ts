@@ -26,6 +26,9 @@ export const signupUser = async (prevState: any, formData: FormData) => {
   } catch (e) {
     console.error(e);
 
+    if (e instanceof Error && 'code' in e && e.code === 'SQLITE_CONSTRAINT') {
+      return { message: 'email already exists' };
+    }
     return { message: 'Failed to sign you up' };
   }
   redirect(`/signup/onboarding/1`);
@@ -51,6 +54,9 @@ export const signinUser = async (prevState: any, formData: FormData) => {
     cookieStore.set(idTokenName, id_token);
   } catch (e) {
     console.error(e);
+    if (e instanceof Error) {
+      return { message: e.message };
+    }
     return { message: 'Failed to sign you in' };
   }
   if (isOnboardingComplete) {

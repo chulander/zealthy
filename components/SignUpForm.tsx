@@ -64,7 +64,7 @@ export function SignUpForm() {
         <div className="mt-4">
           <Link href="/signin" className="text-blue-600 hover:underline">{`Already have an account?`}</Link>
         </div>
-        {formState?.message && <p className="mt-4 text-green-500">{formState.message}</p>}
+        {formState?.message && <p className="mt-4 text-red-500">{formState.message}</p>}
       </form>
     </div>
   );
