@@ -22,7 +22,6 @@ export const UserProvider = ({
   children: React.ReactNode;
   value: Omit<UserContextType, 'updateCurrentStep' | 'updateCompletedSteps'>; // The initial value won't include the update functions
 }) => {
-  console.log('context value', value);
   const [currentStep, setCurrentStep] = useState(value.currentStep);
   const [completedSteps, setCompletedSteps] = useState(value.completedSteps);
 

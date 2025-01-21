@@ -40,21 +40,12 @@ export function OnboardingSteps({ currentStep, userId, components, workflowId }:
         // Prepare component-specific data for the server action
         const componentData = data;
 
-        console.log('Submitting data:', {
-          userId,
-          step,
-          workflowId,
-          componentType,
-          componentData,
-        });
         // Mark the step as completed using a server action
         await completeStep(userId, step, workflowId, componentType, componentData);
 
         const workflowDetails = await getWorkflowStepDetails(userId);
         if (workflowDetails) {
           const { currentStep: newCurrentStep, completedSteps: newCompletedSteps } = workflowDetails;
-          console.log('newCurrentStep:', newCurrentStep);
-          console.log('newCompletedStep:', newCompletedSteps);
           updateCurrentStep(newCurrentStep);
           updateCompletedSteps(newCompletedSteps);
         }

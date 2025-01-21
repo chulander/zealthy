@@ -46,8 +46,6 @@ export const signinUser = async (prevState: any, formData: FormData) => {
 
   try {
     const { access_token, id_token, currentStep, isComplete } = await signin(data);
-    console.log('currentStep', currentStep);
-    console.log('isComplete', isComplete);
     onboardingStep = currentStep;
     isOnboardingComplete = isComplete;
     cookieStore.set(accessTokenName, access_token);
@@ -60,7 +58,6 @@ export const signinUser = async (prevState: any, formData: FormData) => {
     return { message: 'Failed to sign you in' };
   }
   if (isOnboardingComplete) {
-    console.log('redirecting here');
     redirect('/signup/complete');
   } else {
     redirect(`/signup/onboarding/${onboardingStep}`);

@@ -14,8 +14,6 @@ export const fetchLatestWorkflow = async () => {
       },
     });
 
-    console.log('Fetched Workflow:', workflow); // Debugging log
-
     if (!workflow) {
       return {
         success: false,

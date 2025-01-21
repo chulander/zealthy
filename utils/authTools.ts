@@ -32,10 +32,8 @@ const createIdToken = (userId: string, email: string) => {
 export async function getUserFromToken(): Promise<{ id: string; email: string } | null> {
   const cookieStore = await cookies();
   const idToken = cookieStore.get('id_token')?.value;
-  console.log('getUserIdFrom idToken', idToken);
 
   if (!idToken) {
-    // console.error('No id_token found in cookies');
     return null;
   }
 
@@ -74,7 +72,6 @@ export const signin = async ({ email, password }: { email: string; password: str
       completedSteps: true,
     },
   });
-  console.log('userWorkflow', userWorkflow);
 
   if (!userWorkflow) {
     throw new Error('User workflow not found.');

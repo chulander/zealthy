@@ -7,6 +7,5 @@ export async function getLatestWorkflowId(): Promise<string | null> {
     orderBy: [desc(workflows.createdAt)], // Use `desc` for descending order
   });
 
-  console.log('latestWorkflow', latestWorkflow);
   return latestWorkflow ? latestWorkflow.id : null;
 }
