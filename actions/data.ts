@@ -44,12 +44,17 @@ export const fetchWorkflowData = async () => {
         if (row.component === 'about_me') {
           data = row.aboutMeContent;
         } else if (row.component === 'address') {
-          data = {
-            street: row.addressStreet,
-            city: row.addressCity,
-            state: row.addressState,
-            zip: row.addressZip,
-          };
+          // Check if all address fields are null
+          const isEmptyAddress = !row.addressStreet && !row.addressCity && !row.addressState && !row.addressZip;
+
+          if (!isEmptyAddress) {
+            data = {
+              street: row.addressStreet,
+              city: row.addressCity,
+              state: row.addressState,
+              zip: row.addressZip,
+            };
+          }
         } else if (row.component === 'birthdate') {
           data = row.birthdate;
         }

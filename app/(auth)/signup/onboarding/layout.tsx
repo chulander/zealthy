@@ -4,7 +4,8 @@ import { getWorkflowStepDetails } from '@zealthy-app/utils/userWorkFlowTools';
 import { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { UserProvider } from '@zealthy-app/context/UserContext';
-import DynamicStepTracker from '@zealthy-app/components/DynamicStepTracker'; // New client component
+import DynamicStepTracker from '@zealthy-app/components/DynamicStepTracker';
+import DynamicProgressBar from '@zealthy-app/components/DynamicProgressBar';
 
 interface LayoutProps {
   children: ReactNode;
@@ -35,10 +36,7 @@ export default async function OnboardingLayout({ children }: LayoutProps) {
             <DynamicStepTracker currentStep={currentStep} totalSteps={totalSteps} />
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
-            <div
-              className="bg-blue-600 h-2 rounded-full"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            ></div>
+            <DynamicProgressBar />
           </div>
           {children}
         </div>
