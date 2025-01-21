@@ -33,8 +33,8 @@ export default function AdminPage() {
         {/* Latest Workflow Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Latest Workflow</CardTitle>
-            <CardDescription>Details of the most recently created workflow.</CardDescription>
+            <CardTitle>Latest Onboarding Workflow</CardTitle>
+            <CardDescription>Detailed steps of the most recently created onboarding workflow.</CardDescription>
           </CardHeader>
           <CardContent>
             {latestWorkflow ? (
@@ -63,7 +63,18 @@ export default function AdminPage() {
         </Card>
 
         {/* Create Workflow Form */}
-        <AdminCreateWorkFlowForm onWorkflowCreated={loadLatestWorkflow} />
+        <Card>
+          <CardHeader>
+            <CardTitle>Create New Onboarding Workflow</CardTitle>
+            <CardDescription>
+              This new workflow will only be applied to users during signup and cannot be changed to a different
+              workflow
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AdminCreateWorkFlowForm onWorkflowCreated={loadLatestWorkflow} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
