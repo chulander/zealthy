@@ -9,6 +9,7 @@ export async function completeStep(
   completedStep: number,
   workflowId: string,
   componentType: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   componentData: Record<string, any>, // Data to update the component
 ) {
   console.log('Component Data Received:', componentData);

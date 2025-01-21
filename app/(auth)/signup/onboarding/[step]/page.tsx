@@ -6,9 +6,7 @@ import { useUserContext } from '@zealthy-app/context/UserContext';
 import { OnboardingSteps } from '@zealthy-app/components/OnboardingSteps';
 
 export default function OnboardingStepPage() {
-  const { userId, currentStep, components, workflowId, totalSteps, completedSteps } = useUserContext(); // Ensure totalSteps is available in context
-  console.log('currentStep', currentStep);
-  console.log('totalSteps', totalSteps);
+  const { userId, currentStep, components, workflowId, totalSteps, completedSteps } = useUserContext();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -18,17 +16,19 @@ export default function OnboardingStepPage() {
     const requestedStep = match ? parseInt(match[1], 10) : null;
 
     // Redirect logic
-    if (completedSteps === totalSteps) {
+    if (completedSteps >= totalSteps) {
       // If the user has completed all steps, redirect to the complete page
+      console.log('User has completed all steps. Redirecting to /signup/complete.');
       router.replace(`/signup/complete`);
     } else if (requestedStep !== currentStep) {
-      // If the requested step doesn't match the current step, push the correct step to the URL
+      // If the requested step doesn't match the current step, redirect to the correct step
+      console.log(`Redirecting to the correct step: ${currentStep}`);
       router.replace(`/signup/onboarding/${currentStep}`);
     }
-  }, [pathname, currentStep, totalSteps, router, completedSteps]);
+  }, [pathname, currentStep, totalSteps, completedSteps, router]);
 
-  // If user has completed all steps, avoid rendering anything here since they'll be redirected
-  if (currentStep > totalSteps) {
+  // Prevent rendering anything if the user is being redirected
+  if (completedSteps >= totalSteps) {
     return null;
   }
 
